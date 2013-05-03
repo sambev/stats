@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
     <head>
+        <title>Stat Tracker</title>
         <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
     </head>
     <body>
@@ -14,20 +15,17 @@
                 <section>
                     <div class="span4">
                         <header>
-                            <h3>Programs</h3>
+                            <h3>Select a user:</h3>
                         </header>
                         <section>
-                            [[ for p in programs ]]
-                            <button class="btn btn-green">[- p.name|title -]</button><br><br>
-                            [[ endfor ]]
-                            <button class="btn btn-primary">Create New Project</button>
-                        </section>
-                    </div>
-                    <div class="span4">
-                        <header>
-                            <h3>User Stats</h3>
-                        </header>
-                        <section>
+                            <form method="post">
+                                <select>
+                                    [[ for user in users ]]
+                                        <option value="[- user.name -]">[- user.name|title -]</option>
+                                    [[ endfor ]]
+                                </select>
+                                <input type="submit" class="btn btn-primary" />
+                            </form>
                         </section>
                     </div>
                 </section>
