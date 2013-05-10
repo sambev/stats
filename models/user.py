@@ -9,6 +9,8 @@ class User(object):
     """
     __storm_table__ = 'user'
     id = Int(primary=True)
-    name = Unicode()
+    username = Unicode()
+    hash = Unicode()
+    salt = Unicode()
 
     stats = ReferenceSet(id, Stat.user_id)
