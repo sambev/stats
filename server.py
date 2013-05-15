@@ -1,8 +1,8 @@
 from flask import Flask, request
-from jconfig import render
+from config.jconfig import render
 from models.program import Program
 from models.user import User
-from dbconfig import store
+from config.dbconfig import store
 from util.pbkdf2 import pbkdf2_hex
 from util.salts import getRandomSalt
 

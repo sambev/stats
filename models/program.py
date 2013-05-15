@@ -1,5 +1,5 @@
 from storm.locals import *
-from dbconfig import store
+from config.dbconfig import store
 
 
 class Program(object):
