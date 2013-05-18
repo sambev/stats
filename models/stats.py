@@ -19,13 +19,13 @@ class Stat(object):
     """
     __storm_table__ = 'stat'
     id = Int(primary=True)
-    type = Int()
+    type_id = Int()
     program_id = Int()
     user_id = Int()
     value = Unicode()
 
-    type = Reference(type, StatType.id)
-    program = Reference(program_id, Program)
+    type = Reference(type_id, StatType.id)
+    program = Reference(program_id, Program.id)
 
 
 

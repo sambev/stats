@@ -1,5 +1,7 @@
 from storm.locals import *
 from stats import Stat
+from program import Program, ProgramUserLink
+from config.dbconfig import store
 
 
 
@@ -14,3 +16,9 @@ class User(object):
     salt = Unicode()
 
     stats = ReferenceSet(id, Stat.user_id)
+    
+    programs = ReferenceSet(id,
+                            ProgramUserLink.user_id,
+                            ProgramUserLink.program_id,
+                            Program.id)
+

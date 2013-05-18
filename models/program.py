@@ -1,5 +1,5 @@
 from storm.locals import *
-from dbconfig import store
+from config.dbconfig import store
 
 
 class Program(object):
@@ -25,7 +25,7 @@ class ProgramUserLink(object):
     I am a linking table for Programs and users
     """
     __storm_table__ = 'program_user_link'
-    id = Int(Primary=True)
+    id = Int(primary=True)
     program_id = Int()
     user_id = Int()
 
