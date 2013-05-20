@@ -6,6 +6,7 @@ from models.stats import Stat, StatType
 from config.dbconfig import store
 from util.pbkdf2 import pbkdf2_hex
 from util.salts import getRandomSalt
+import json
 
 app = Flask(__name__)
 
@@ -25,7 +26,6 @@ def creatuser():
     GET: Render the create account form
     POST: Create the user
     """
-    print dir(session)
     if request.method == 'GET':
         return render('index.html')
 
@@ -69,7 +69,7 @@ def login():
         thehash = pbkdf2_hex(passwd.encode('utf-8'), salt.encode('utf-8'))
 
         # store user id in the session
-        session['userid'] = new_user.id
+        session['userid'] = user.id
 
         if thehash == user.hash:
             return redirect('/home')
@@ -102,8 +102,10 @@ def getAllPrograms():
     user = getUser()
     if user:
         if request.method == 'GET':
-            user_programs = [program.name for program in user.programs]
-            return jsonify(programs=user_programs)
+            program_list = []
+            for program in user.programs:
+                program_list.append({'name': program.name})
+            return json.dumps(program_list)
     else:
         'no user found, login'
 
@@ -120,19 +122,19 @@ def programs(program_name):
         if request.method == 'GET':
             user_program = user.programs.find(Program.name == program_name).one()
             user_stats = user.stats.find(Stat.program_id == user_program.id)
-            stats_json = {}
+            stats_list = []
             for stat in user_stats:
-                stats_json[stat.type.name] = {
-                    'stat_id': stat.id,
-                    'program_id':stat.program_id,
-                    'user_id':stat.user_id,
-                    'value':stat.value,
-                }
-            print user_stats
-            return jsonify(
-                program=user_program.name,
-                stats=stats_json
-            )
+                stats_list.append({
+                    'program': stat.program.name,
+                    'program_id': stat.program_id,
+                    'id': stat.id,
+                    'type': stat.type.name,
+                    'type_id': stat.type_id,
+                    'user_id': stat.user_id,
+                    'value': stat.value
+                })
+            print stats_list
+            return json.dumps(stats_list)
 
         if request.method == 'POST':
             print "create a program yo"
