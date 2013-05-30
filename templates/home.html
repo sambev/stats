@@ -22,23 +22,24 @@
 [[ block footer ]]
 <script type="text/template" id="program_list_template">
     <h3>Projects</h3>
-    <% _.each(collection, function(model) { %> 
-        <button class="program_btn" id="<%= model.name %>"><%= model.name %></button><br>
+    <% _.each(programs, function(program) { %> 
+        <button class="program_btn" id="<%= program.name %>"><%= program.name %></button><br>
     <% }); %>
     <br>
-    <button>Create Project</button>
+    <button id="new_project">Create Project</button>
 </script>
 
 <script type="text/template" id="program_stats_template">
-    <h3>Stats for <%= model.program %></h3>
+    <h3>Stats for <%= program %></h3>
     <table>
-        <% _.each(model, function(m) { %>
+        <% _.each(stats, function(stat) { %>
             <tr>
-                <td><%= m.type %></td>
-                <td><%= m.value %></td>
+                <td><%= stat.type %></td>
+                <td id="stat_value" model_id="<%= stat.id %>" contenteditable="true"><%= stat.value %></td>
             </tr>
         <% }); %>
     </table>
+    <button id="new_stat">Create New Stat</button>
 </script>
 
 <script type="text/javascript" src="/static/js/bootstrap.js"></script>

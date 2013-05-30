@@ -2,7 +2,7 @@ from flask import Flask, request, session, redirect, jsonify
 from config.jconfig import render
 from models.program import Program
 from models.user import User
-from models.stats import Stat, StatType
+from models.stats import Stat
 from config.dbconfig import store
 from util.pbkdf2 import pbkdf2_hex
 from util.salts import getRandomSalt
@@ -128,12 +128,10 @@ def programs(program_name):
                     'program': stat.program.name,
                     'program_id': stat.program_id,
                     'id': stat.id,
-                    'type': stat.type.name,
-                    'type_id': stat.type_id,
+                    'name': stat.name,
                     'user_id': stat.user_id,
                     'value': stat.value
                 })
-            print stats_list
             return json.dumps(stats_list)
 
         if request.method == 'POST':
@@ -144,12 +142,12 @@ def programs(program_name):
 
 
 
-@app.route('/stats/<int:stat_id>', methods=['GET'])
+@app.route('/stats/<int:stat_id>', methods=['GET', 'PUT'])
 def programStats(stat_id):
     """
     GET: return the info for that particular stat
     POST: create a new stat for the particular program
-    PUT: updatea a stat for the particular program
+    PUT: update a stat for the particular program
     DELETE: delete a stat for the particular program
     """
     user = getUser()
@@ -159,12 +157,19 @@ def programStats(stat_id):
             return jsonify(
                 program=the_stat.program.name,
                 stat={
-                    'type': the_stat.type.name,
+                    'name': the_stat.name,
                     'id': the_stat.id,
                     'user_id': the_stat.user_id,
                     'value': the_stat.value
                 }
             )
+        elif request.method == 'PUT':
+            # get the new data, find the particular stat and update it
+            new_data = json.loads(request.data)
+            stat = store.find(Stat, Stat.id == int(new_data['id'])).one()
+            stat.value = new_data['value']
+            store.commit()
+            return 'sucess'
 
 
 
