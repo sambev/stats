@@ -10,13 +10,8 @@ class Program(object):
     id = Int(primary=True)
     name = Unicode()
 
-    
-    def addUser(self, user):
-        """
-        Add a user to this program
-        """
-        store.add(ProgramUserLink(self.id, user.id));
-    
+    def __init__(self, name):
+        self.name = name
 
 
 

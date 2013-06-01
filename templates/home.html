@@ -8,6 +8,12 @@
 
 [[ block body ]]
 <div class="row">
+    <div class="span4">
+        <div id="create_program">
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="span3">
         <div id="program_list">
         </div>
@@ -21,12 +27,11 @@
 
 [[ block footer ]]
 <script type="text/template" id="program_list_template">
-    <h3>Projects</h3>
+    <h3>Current Programs</h3>
     <% _.each(programs, function(program) { %> 
-        <button class="program_btn" id="<%= program.name %>"><%= program.name %></button><br>
+        <button class="program_btn" name="<%= program.name %>"><%= program.name %></button><br>
     <% }); %>
     <br>
-    <button id="new_project">Create Project</button>
 </script>
 
 <script type="text/template" id="program_stats_template">
@@ -34,12 +39,18 @@
     <table>
         <% _.each(stats, function(stat) { %>
             <tr>
-                <td><%= stat.type %></td>
+                <td><%= stat.name %></td>
                 <td id="stat_value" model_id="<%= stat.id %>" contenteditable="true"><%= stat.value %></td>
             </tr>
         <% }); %>
     </table>
     <button id="new_stat">Create New Stat</button>
+</script>
+
+<script type="text/template" id="create_program_template">
+    <h3>Create a new program</h3>
+    <input id="new_program_name" type="text" name="program_name" />
+    <button id="new_program">Create New Program</button>
 </script>
 
 <script type="text/javascript" src="/static/js/bootstrap.js"></script>

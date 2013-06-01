@@ -1,6 +1,6 @@
 from flask import Flask, request, session, redirect, jsonify
 from config.jconfig import render
-from models.program import Program
+from models.program import Program, ProgramUserLink
 from models.user import User
 from models.stats import Stat
 from config.dbconfig import store
@@ -94,10 +94,11 @@ def home():
 
 
 
-@app.route('/programs', methods=['GET'])
+@app.route('/programs', methods=['GET', 'POST'])
 def getAllPrograms():
     """
-    Return all programs for the current user
+    GET: Return all programs for the current user
+    POST: create a new program
     """
     user = getUser()
     if user:
@@ -106,6 +107,16 @@ def getAllPrograms():
             for program in user.programs:
                 program_list.append({'name': program.name})
             return json.dumps(program_list)
+
+        elif request.method == 'POST':
+            # create the program and link it to the user
+            new_program = store.add(Program(json.loads(request.data)['name']))
+            store.flush()
+            link = store.add(ProgramUserLink(new_program.id, user.id))
+            store.commit()
+
+            return jsonify(name=new_program.name,
+                            program_id=new_program.id)
     else:
         'no user found, login'
 
@@ -114,28 +125,31 @@ def getAllPrograms():
 @app.route('/stats/<string:program_name>', methods=['GET', 'POST'])
 def programs(program_name):
     """
-    GET: return all programs for the logged in user
-    POST: create a new <program>
+    GET: return all stats for the given program
     """
     user = getUser()
     if user:
         if request.method == 'GET':
             user_program = user.programs.find(Program.name == program_name).one()
+            print user_program.name
             user_stats = user.stats.find(Stat.program_id == user_program.id)
             stats_list = []
-            for stat in user_stats:
+            if user_stats.count() > 0:
+                for stat in user_stats:
+                    stats_list.append({
+                        'program': user_program.name,
+                        'program_id': user_program.id,
+                        'id': stat.id,
+                        'name': stat.name,
+                        'user_id': stat.user_id,
+                        'value': stat.value
+                    })
+            else:
                 stats_list.append({
-                    'program': stat.program.name,
-                    'program_id': stat.program_id,
-                    'id': stat.id,
-                    'name': stat.name,
-                    'user_id': stat.user_id,
-                    'value': stat.value
+                    'program': user_program.name,
+                    'program_id': user_program.id,
                 })
             return json.dumps(stats_list)
-
-        if request.method == 'POST':
-            print "create a program yo"
 
     else:
         return 'no user found, login'

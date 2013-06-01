@@ -12,7 +12,9 @@ App.Models.Stat = Backbone.Model.extend({
     urlRoot: '/stats/'
 });
 
-App.Models.Program = Backbone.Model.extend();
+App.Models.Program = Backbone.Model.extend({
+    urlRoot: '/programs'   
+});
 
 App.Collections.StatCollection = Backbone.Collection.extend({
     model: App.Models.Stat,
