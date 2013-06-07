@@ -1,0 +1,25 @@
+Stats server
+
+My frist attempt at a RESTful API
+
+Resources:
+
+/programs
+    GET: list all programs
+    POST: create a program
+    PUT: not used
+    DELETE: not used
+
+
+/programs/<program>
+    GET: get <program> and all stats associated
+    POST: create a new program
+    DELETE: delete a program
+
+
+/programs/<program>/stats/<stat>
+    GET: get all <statssure> from <program>
+    POST: create a new <stat> for <program>
+    PUT: update <stat> for <program>
+    DELETE: delete <stat from <program>
+

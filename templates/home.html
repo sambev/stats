@@ -1,8 +1,61 @@
 [[ extends 'base.html' ]]
+
+[[ block head ]]
+    <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/underscore-min.js"></script>
+    <script type="text/javascript" src="/static/js/backbone-min.js"></script>
+[[ endblock ]]
+
 [[ block body ]]
 <div class="row">
-    <div class="span12">
-        Hello [- user.username -]
+    <div class="span4">
+        <div id="create_program">
+        </div>
     </div>
 </div>
+<div class="row">
+    <div class="span3">
+        <div id="program_list">
+        </div>
+    </div>
+    <div class="span3">
+        <div id="program_stats">
+        </div>
+    </div>
+</div>
+[[ endblock ]]
+
+[[ block footer ]]
+<script type="text/template" id="program_list_template">
+    <h3>Current Programs</h3>
+    <% _.each(programs, function(program) { %> 
+        <button class="program_btn" name="<%= program.name %>"><%= program.name %></button><br>
+    <% }); %>
+    <br>
+</script>
+
+<script type="text/template" id="program_stats_template">
+    <h3>Stats for <%= program %></h3>
+    <table>
+        <% _.each(stats, function(stat) { %>
+            <tr>
+                <td><%= stat.name %></td>
+                <td id="stat_value" model_id="<%= stat.id %>" contenteditable="true"><%= stat.value %></td>
+            </tr>
+        <% }); %>
+    </table>
+    <button id="new_stat">Create New Stat</button>
+</script>
+
+<script type="text/template" id="create_program_template">
+    <h3>Create a new program</h3>
+    <input id="new_program_name" type="text" name="program_name" />
+    <button id="new_program">Create New Program</button>
+</script>
+
+<script type="text/javascript" src="/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/models.js"></script>
+<script type="text/javascript" src="/static/js/views.js"></script>
+<script type="text/javascript" src="/static/js/stats.js"></script>
+
 [[ endblock ]]

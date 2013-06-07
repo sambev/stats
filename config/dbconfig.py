@@ -1,5 +1,4 @@
 from storm.locals import *
-from config import config
 
-db = create_database(config.get('database', 'uri'))
+db = create_database("mysql://sambev:trackstat87@192.168.0.199:3306/trackstat")
 store = Store(db)
