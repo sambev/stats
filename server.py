@@ -48,17 +48,13 @@ def creatuser():
 
 
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['POST'])
 def login():
     """
     GET: Render the login form
     POST: try to verify the user
     """
-    if request.method == 'GET':
-        return render('login.html')
-
-
-    elif request.method == 'POST':
+    if request.method == 'POST':
         # Get the user information
         name = request.form['username']
         passwd = request.form['password']
