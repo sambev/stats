@@ -1,4 +1,10 @@
 from storm.locals import *
+import ConfigParser, os
 
-db = create_database("mysql://sambev:trackstat87@192.168.0.199:3306/trackstat")
+# read in the config file
+config = ConfigParser.ConfigParser()
+config.readfp(open('config.ini'))
+
+
+db = create_database(config.get('database', 'uri'))
 store = Store(db)
