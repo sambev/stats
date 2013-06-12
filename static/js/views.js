@@ -80,7 +80,10 @@ App.Views.ProgramList = Backbone.View.extend({
         }
         stats.fetch({
             success: function() {
-                new App.Views.StatList({
+                if (App.StatView) {
+                    App.StatView.undelegateEvents();
+                }
+                App.StatView = new App.Views.StatList({
                     collection: stats
                 });
             }
@@ -101,9 +104,11 @@ App.Views.StatList = Backbone.View.extend({
     template: _.template( $('#program_stats_template').html() ),
 
     initialize: function () {
+        this.collection.on('add', this.render, this);
         this.render();
     },
 
+    // render this view, if this view already has a program, set it
     render: function() {
         if (this.collection.models[0]) {
             var program_name = this.collection.models[0].get('program');
@@ -138,7 +143,17 @@ App.Views.StatList = Backbone.View.extend({
      * and the program that is currently being viewed
      */
     newStat: function(event) {
-        console.log('create a new stat');
+        var stat_name = document.getElementById('new_stat_name').value;
+        var prog_id = this.collection.models[0].get('program_id');
+        // create the model and save it to the db
+        App.NewStatModel = new App.Models.Stat({
+           name: stat_name,
+           program_id: prog_id,
+           value: 0
+        });
+        App.NewStatModel.save();
+        // add it to the collection
+        this.collection.add(App.NewStatModel);
     },
     
 });

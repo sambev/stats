@@ -127,7 +127,6 @@ def programs(program_name):
     if user:
         if request.method == 'GET':
             user_program = user.programs.find(Program.name == program_name).one()
-            print user_program.name
             user_stats = user.stats.find(Stat.program_id == user_program.id)
             stats_list = []
             if user_stats.count() > 0:
@@ -151,7 +150,7 @@ def programs(program_name):
         return 'no user found, login'
 
 
-
+@app.route('/stats/', methods=['POST'], defaults={'stat_id': None})
 @app.route('/stats/<int:stat_id>', methods=['GET', 'PUT'])
 def programStats(stat_id):
     """
@@ -173,13 +172,23 @@ def programStats(stat_id):
                     'value': the_stat.value
                 }
             )
+
+        elif request.method == 'POST':
+            # create a new stat for the program
+            new_stat = store.add(Stat())
+            new_stat.name = request.json['name']
+            new_stat.user_id = user.id
+            new_stat.program_id = request.json['program_id']
+            store.commit()
+            return 'success'
+
         elif request.method == 'PUT':
             # get the new data, find the particular stat and update it
             new_data = json.loads(request.data)
             stat = store.find(Stat, Stat.id == int(new_data['id'])).one()
             stat.value = new_data['value']
             store.commit()
-            return 'sucess'
+            return 'success'
 
 
 
