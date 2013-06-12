@@ -196,5 +196,5 @@ def programStats(stat_id):
 # Run the app
 if __name__ == "__main__":
     app.debug = True
-    app.secret_key = '9|VMb1z5NXry#bOy'
+    app.secret_key = 'makethisasecret'
     app.run()
