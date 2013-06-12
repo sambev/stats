@@ -1,25 +1,28 @@
 Stats server
 
-My frist attempt at a RESTful API
+My frist attempt at a RESTful API in Flask with Storm, this is my first time using Flask
+and I am pretty new so forgive any bad code...  Getting this to work will take a couple steps:
+
+1: Dependencies - Install them with `pip install -r requirements.txt`
+2: Database - You can use whatever you would like. I used MySQL-python
+3: A better salt and secret key
+
+Once you have 1 and 2 you should be able to run it with
+`python server.py`
 
 Resources:
 
 /programs
     GET: list all programs
     POST: create a program
-    PUT: not used
-    DELETE: not used
 
+(I should probably change this one to avoid confusion with the next URL)
+/stats/<string:program_name>
+    GET: return all stats for the given program
 
-/programs/<program>
-    GET: get <program> and all stats associated
-    POST: create a new program
-    DELETE: delete a program
-
-
-/programs/<program>/stats/<stat>
-    GET: get all <statssure> from <program>
-    POST: create a new <stat> for <program>
-    PUT: update <stat> for <program>
-    DELETE: delete <stat from <program>
+/stats/<int:stat_id>
+    GET: get the data for the given stat
+    POST: create a new stat for the particular program
+    PUT: update a particular stat
+    DELETE: delete a particular stat XXX Not implimented yet
 
