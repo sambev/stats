@@ -1,7 +1,6 @@
 Stats server
 
-My frist attempt at a RESTful API in Flask with Storm, this is my first time using Flask
-and I am pretty new so forgive any bad code...  Getting this to work will take a couple steps:
+My frist attempt at a RESTful API in Flask with Storm, this is my first time using Flask and I am pretty new so forgive any bad code...  Getting this to work will take a couple steps:
 
 1: Dependencies - Install them with `pip install -r requirements.txt`
 2: Database - You can use whatever you would like. I used MySQL-python
