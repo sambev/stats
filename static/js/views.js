@@ -105,6 +105,7 @@ App.Views.StatList = Backbone.View.extend({
 
     initialize: function () {
         this.collection.on('add', this.render, this);
+        this.collection.on('remove', this.render, this);
         this.render();
     },
 
@@ -125,6 +126,7 @@ App.Views.StatList = Backbone.View.extend({
     events: {
         'blur td[id=stat_value]': 'saveStat',
         'click button[id=new_stat]': 'newStat',
+        'click button[id=del_stat]': 'deleteStat',
     },
 
     /* saveStat Function
@@ -154,6 +156,17 @@ App.Views.StatList = Backbone.View.extend({
         App.NewStatModel.save();
         // add it to the collection
         this.collection.add(App.NewStatModel);
+    },
+
+    /* deleteStat Function
+     * When you click on this button, delete the specified stat
+     */
+    deleteStat: function(event) {
+        // find and delete that model from the collection and server
+        var model_id = event.currentTarget.getAttribute('stat_id');
+        var model = this.collection.get(model_id);
+        this.collection.remove(model);
+        model.destroy();
     },
     
 });

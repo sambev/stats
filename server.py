@@ -151,7 +151,7 @@ def programs(program_name):
 
 
 @app.route('/stats/', methods=['POST'], defaults={'stat_id': None})
-@app.route('/stats/<int:stat_id>', methods=['GET', 'PUT'])
+@app.route('/stats/<int:stat_id>', methods=['GET', 'PUT', 'DELETE'])
 def programStats(stat_id):
     """
     GET: return the info for that particular stat
@@ -188,6 +188,12 @@ def programStats(stat_id):
             stat = store.find(Stat, Stat.id == int(new_data['id'])).one()
             stat.value = new_data['value']
             store.commit()
+            return 'success'
+
+        elif request.method == 'DELETE':
+            # delete that entry from the database
+            stat = store.find(Stat, Stat.id == stat_id).one()
+            store.remove(stat)
             return 'success'
 
 

@@ -41,6 +41,7 @@
             <tr>
                 <td><%= stat.name %></td>
                 <td id="stat_value" model_id="<%= stat.id %>" contenteditable="true"><%= stat.value %></td>
+                <td><button id="del_stat" stat_id="<%= stat.id %>" stat_value="<%= stat.value %>">X</button></td>
             </tr>
         <% }); %>
     </table>
