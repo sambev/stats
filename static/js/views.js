@@ -17,20 +17,38 @@ App.Views.CreateProgram = Backbone.View.extend({
 
     events: {
         'click button[id=new_program]': 'createProgram',
+        'click button[id=add_stat]': 'addStat' //NOT IMPLEMENTED
     },
 
     /* createProgram function
      * create a new program with the name they typed in
+     * and the stats provided
      */
     createProgram: function() {
-        // create a new model
+        // create a new program model
         var program_name = document.getElementById('new_program_name').value;
         this.model.set({'name': program_name});
         this.model.save(null, {
             success: function(model) {
                 // add it to the collection and clear the form
                 App.Programs.add([model]);
+
+                // create the stat entered with that model
+                var stat_name = document.getElementById('stat1name').value;
+                var stat_value = document.getElementById('stat1value').value;
+                // create the model and save it to the db
+                App.NewStatModel = new App.Models.Stat({
+                   name: stat_name,
+                   program_id: model.get('program_id'),
+                   value: stat_value
+                });
+                App.NewStatModel.save();
+
+                // clear the forms
                 document.getElementById('new_program_name').value = '';
+                document.getElementById('stat1name').value = '';
+                document.getElementById('stat1value').value = '';
+                
 
                 // select that program
                 App.ProgramList.selectProgram(event, model.get('name'));
@@ -39,7 +57,19 @@ App.Views.CreateProgram = Backbone.View.extend({
                 console.log('there was an error');
             },
         });
-    }
+    },
+
+    /* addStat function
+     * add a stat name and value input to the template
+     * XXX NOT IMPLEMENTED YET
+     */
+    addStat: function() {
+        console.log('add stat');
+        // create an input element
+        var new_input = document.createElement('input');
+        new_input.setAttribute('type', 'text');
+        new_inpute.setAttribute('placeholder', 'Stat name')
+    },
 });
 
 
@@ -80,6 +110,16 @@ App.Views.ProgramList = Backbone.View.extend({
         }
         stats.fetch({
             success: function() {
+                // If successful create a new view with the stats
+                if (App.StatView) {
+                    App.StatView.undelegateEvents();
+                }
+                App.StatView = new App.Views.StatList({
+                    collection: stats
+                });
+            },
+            error: function(ret) {
+                // If it fails create the view without stats
                 if (App.StatView) {
                     App.StatView.undelegateEvents();
                 }
@@ -104,7 +144,6 @@ App.Views.StatList = Backbone.View.extend({
     template: _.template( $('#program_stats_template').html() ),
 
     initialize: function () {
-        this.collection.on('add', this.render, this);
         this.collection.on('remove', this.render, this);
         this.render();
     },
@@ -153,9 +192,12 @@ App.Views.StatList = Backbone.View.extend({
            program_id: prog_id,
            value: 0
         });
-        App.NewStatModel.save();
-        // add it to the collection
         this.collection.add(App.NewStatModel);
+        App.NewStatModel.save(null, {
+            success: function(ret) {
+                App.StatView.render();
+            }
+        });
     },
 
     /* deleteStat Function

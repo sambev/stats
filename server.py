@@ -139,12 +139,9 @@ def programs(program_name):
                         'user_id': stat.user_id,
                         'value': stat.value
                     })
+                return json.dumps(stats_list)
             else:
-                stats_list.append({
-                    'program': user_program.name,
-                    'program_id': user_program.id,
-                })
-            return json.dumps(stats_list)
+                return 'None'
 
     else:
         return 'no user found, login'
@@ -163,6 +160,7 @@ def programStats(stat_id):
     if user:
         if request.method == 'GET':
             the_stat = user.stats.find(Stat.id == stat_id).one()
+            print the_stat
             return jsonify(
                 program=the_stat.program.name,
                 stat={
@@ -179,8 +177,17 @@ def programStats(stat_id):
             new_stat.name = request.json['name']
             new_stat.user_id = user.id
             new_stat.program_id = request.json['program_id']
+            new_stat.value = unicode(request.json['value'])
             store.commit()
-            return 'success'
+            stat_json = {
+                'program': new_stat.program.name,
+                'program_id': new_stat.program.id,
+                'id': new_stat.id,
+                'name':new_stat.name,
+                'user_id': new_stat.user_id,
+                'value': new_stat.value
+            }
+            return json.dumps(stat_json)
 
         elif request.method == 'PUT':
             # get the new data, find the particular stat and update it
@@ -202,5 +209,5 @@ def programStats(stat_id):
 # Run the app
 if __name__ == "__main__":
     app.debug = True
-    app.secret_key = '9|VMb1z5NXry#bOy'
+    app.secret_key = 'makethisasecret'
     app.run()
