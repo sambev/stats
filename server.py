@@ -90,8 +90,9 @@ def home():
 
 
 
-@app.route('/programs', methods=['GET', 'POST'])
-def getAllPrograms():
+@app.route('/programs', methods=['GET', 'POST'], defaults={'program_id': None})
+@app.route('/programs/<int:program_id>', methods=['DELETE'])
+def getAllPrograms(program_id):
     """
     GET: Return all programs for the current user
     POST: create a new program
@@ -101,7 +102,10 @@ def getAllPrograms():
         if request.method == 'GET':
             program_list = []
             for program in user.programs:
-                program_list.append({'name': program.name})
+                program_list.append({
+                    'name': program.name,
+                    'id': program.id
+                })
             return json.dumps(program_list)
 
         elif request.method == 'POST':
@@ -113,6 +117,12 @@ def getAllPrograms():
 
             return jsonify(name=new_program.name,
                             program_id=new_program.id)
+
+        elif request.method == 'DELETE':
+            # delete the program
+            sad_program = store.find(Program, Program.id == program_id).one()
+            store.remove(sad_program)
+            return jsonify(status='program deleted')
     else:
         'no user found, login'
 
@@ -139,12 +149,9 @@ def programs(program_name):
                         'user_id': stat.user_id,
                         'value': stat.value
                     })
+                return json.dumps(stats_list)
             else:
-                stats_list.append({
-                    'program': user_program.name,
-                    'program_id': user_program.id,
-                })
-            return json.dumps(stats_list)
+                return 'None'
 
     else:
         return 'no user found, login'
@@ -163,6 +170,7 @@ def programStats(stat_id):
     if user:
         if request.method == 'GET':
             the_stat = user.stats.find(Stat.id == stat_id).one()
+            print the_stat
             return jsonify(
                 program=the_stat.program.name,
                 stat={
@@ -179,8 +187,17 @@ def programStats(stat_id):
             new_stat.name = request.json['name']
             new_stat.user_id = user.id
             new_stat.program_id = request.json['program_id']
+            new_stat.value = unicode(request.json['value'])
             store.commit()
-            return 'success'
+            stat_json = {
+                'program': new_stat.program.name,
+                'program_id': new_stat.program.id,
+                'id': new_stat.id,
+                'name':new_stat.name,
+                'user_id': new_stat.user_id,
+                'value': new_stat.value
+            }
+            return json.dumps(stat_json)
 
         elif request.method == 'PUT':
             # get the new data, find the particular stat and update it
