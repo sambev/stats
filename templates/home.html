@@ -29,7 +29,8 @@
 <script type="text/template" id="program_list_template">
     <h3>Current Programs</h3>
     <% _.each(programs, function(program) { %> 
-        <button class="program_btn" name="<%= program.name %>"><%= program.name %></button><br>
+        <button class="program_btn" name="<%= program.name %>"><%= program.name %></button>
+        <button class="delete_prog" program_id="<%= program.id %>">X</button><br>
     <% }); %>
     <br>
 </script>

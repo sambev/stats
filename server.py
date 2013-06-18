@@ -90,8 +90,9 @@ def home():
 
 
 
-@app.route('/programs', methods=['GET', 'POST'])
-def getAllPrograms():
+@app.route('/programs', methods=['GET', 'POST'], defaults={'program_id': None})
+@app.route('/programs/<int:program_id>', methods=['DELETE'])
+def getAllPrograms(program_id):
     """
     GET: Return all programs for the current user
     POST: create a new program
@@ -101,7 +102,10 @@ def getAllPrograms():
         if request.method == 'GET':
             program_list = []
             for program in user.programs:
-                program_list.append({'name': program.name})
+                program_list.append({
+                    'name': program.name,
+                    'id': program.id
+                })
             return json.dumps(program_list)
 
         elif request.method == 'POST':
@@ -113,6 +117,12 @@ def getAllPrograms():
 
             return jsonify(name=new_program.name,
                             program_id=new_program.id)
+
+        elif request.method == 'DELETE':
+            # delete the program
+            sad_program = store.find(Program, Program.id == program_id).one()
+            store.remove(sad_program)
+            return jsonify(status='program deleted')
     else:
         'no user found, login'
 

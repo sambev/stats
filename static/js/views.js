@@ -85,7 +85,8 @@ App.Views.ProgramList = Backbone.View.extend({
 
     initialize: function () {
         // for the program view
-        this.listenTo(this.collection, 'add', this.render);
+        this.collection.on('remove', this.render, this);
+        this.collection.on('add', this.render, this);
         this.render();
     },
 
@@ -95,6 +96,7 @@ App.Views.ProgramList = Backbone.View.extend({
 
     events: {
         'click button[class=program_btn]': 'selectProgram',
+        'click button[class=delete_prog]': 'deleteProgram'
     },
 
     /* selectProgram Function
@@ -129,6 +131,17 @@ App.Views.ProgramList = Backbone.View.extend({
             }
         });
     },
+
+    /* deleteProgram function
+     * delete the program on the server and remove it from the collection
+     */
+    deleteProgram: function(event) {
+        var program_id = event.currentTarget.getAttribute('program_id');
+        var program = this.collection.get(program_id);
+        // remove the model from the collection then destroy it
+        this.collection.remove(program);
+        program.destroy();
+    }
 });
 
 
