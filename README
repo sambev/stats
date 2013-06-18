@@ -12,9 +12,10 @@ Once you have 1 and 2 you should be able to run it with
 
 Resources:
 
-/programs
+/programs/<int:program_id>
     GET: list all programs
     POST: create a program
+    DELETE: delete the specified program
 
 (I should probably change this one to avoid confusion with the next URL)
 /stats/<string:program_name>
@@ -24,5 +25,7 @@ Resources:
     GET: get the data for the given stat
     POST: create a new stat for the particular program
     PUT: update a particular stat
-    DELETE: delete a particular stat XXX Not implimented yet
+    DELETE: delete a particular stat
 
+
+This also has a basic backbone interface, nothing pretty, so feel free to design your own.
